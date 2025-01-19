@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "accounts",
     "core",
+    "anagrafiche",
+    "django_filters",
     "django_countries",
     "django_bootstrap5",
     "crispy_forms",
