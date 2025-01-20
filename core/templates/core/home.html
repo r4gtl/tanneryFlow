@@ -1,6 +1,7 @@
 {% extends 'core/base.html' %} {% load static %} {% block title %}tannerySuite
-{% endblock %} {% block sidenav %} {% include "core/partials/_sidenav_base.html"
-%} {% endblock %} {% block content %}
+{% endblock %} 
+
+{% block content %}
 <div class="container">
   <div class="row mt-4">
     <div class="col-4">
@@ -37,7 +38,7 @@
             Esplora, crea, modifica ed elimina gli articoli.
           </p>
           <a
-            href="{% url 'articoli:articoli_home' %}"
+            href="#"
             class="btn btn-sm btn-primary"
             >Vai alla sezione</a
           >
@@ -86,7 +87,7 @@
             Gestisci l'approvvigionamento delle materie prime.
           </p>
           <a
-            href="{% url 'acquistopelli:dashboard_acquisto_pelli' %}"
+            href="#"
             class="btn btn-sm btn-primary"
             >Vai alla sezione</a
           >
@@ -116,7 +117,7 @@
             Elenco lavorazioni e listini prezzi lavorazioni.
           </p>
           <a
-            href="{% url 'lavorazioni:dashboard_lavorazioni' %}"
+            href="#"
             class="btn btn-sm btn-primary"
             >Vai alla sezione</a
           >
@@ -246,7 +247,7 @@
             Documenta e traccia le azioni correttive e preventive.
           </p>
           <a
-            href="{% url 'nonconformity:home_rapporti_nc' %}"
+            href="#"
             class="btn btn-sm btn-primary"
             >Vai alla sezione</a
           >

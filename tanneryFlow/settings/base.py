@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "accounts",
     "core",
     "anagrafiche",
+    "magazzino",
     "django_filters",
     "django_countries",
     "django_bootstrap5",
@@ -79,7 +80,13 @@ ROOT_URLCONF = "tanneryFlow.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            os.path.join(BASE_DIR, "..", "templates"),
+            os.path.join(BASE_DIR, "..", "accounts/templates"),
+            os.path.join(BASE_DIR, "userprofile/templates"),
+            os.path.join(BASE_DIR, "core/templates"),
+            os.path.join(BASE_DIR, "magazzino/templates"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
