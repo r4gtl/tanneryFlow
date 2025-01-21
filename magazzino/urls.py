@@ -18,4 +18,21 @@ urlpatterns = [
         "modifica_pallet/<int:pk>/", PalletUpdateView.as_view(), name="modifica_pallet"
     ),
     path("delete_pallet/<int:pk>/", delete_pallet, name="delete_pallet"),
+    # Stock Movements
+    path("stock_movements/", home_stock_movements, name="home_stock_movements"),
+    path(
+        "aggiungi_stock_movement/",
+        StockMovementCreateView.as_view(),
+        name="aggiungi_stock_movement",
+    ),
+    path(
+        "modifica_stock_movement/<int:pk>/",
+        StockMovementUpdateView.as_view(),
+        name="modifica_stock_movement",
+    ),
+    path(
+        "delete_stock_movement/<int:pk>/",
+        delete_stock_movement,
+        name="delete_stock_movement",
+    ),
 ]

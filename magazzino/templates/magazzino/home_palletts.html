@@ -20,7 +20,7 @@
 
     <div class="container">
         
-        <h3>Lotti</h3>
+        <h3>Palletts</h3>
         <br>
         {% include "core/partials/_messages.html" %}
         
@@ -118,8 +118,8 @@
                     <td class="col-md-1"><a href="{% url 'magazzino:modifica_pallet' pk=pallet.pk %}">{{ pallet.codice }}</a></td>
                     <td class="col-md-2">{{ pallet.origine }}</td>  
                     <td class="col-md-2">{{ pallet.pezzi }} <img class="country-select-flag" id="{ flag_id }" style="max-height: 24px;" src="{{ fornitore.country.flag  }}"></td>
-                    <td class="col-md-2">{{ pallet.fk_scelta }}</td>  
-                    <td class="col-md-2">{{ pallet.fk_zona_magazzino }}</td>  
+                    <td class="col-md-2">{{ pallet.fk_scelta|default_if_none:"Non assegnata" }}</td>  
+                    <td class="col-md-2">{{ pallet.fk_zona_magazzino|default_if_none:"Non assegnata" }}</td>  
                     <td class="col-md-2">{{ pallet.created_at }}</td> 
                   </tr>
                 

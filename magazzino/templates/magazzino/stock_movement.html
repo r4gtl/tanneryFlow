@@ -1,0 +1,108 @@
+{% extends 'core/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}{{ block.super }} | Magazzino - Movimento {% endblock %}
+
+
+
+{% block content %}
+
+{% include 'core/modals/delConfirm.html' %}
+
+<nav aria-label="breadcrumb" class="mt-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>      
+        <li class="breadcrumb-item"><a href="{% url 'magazzino:home_stock_movements' %}">Movimenti Stock</a></li>
+        {% if form.instance.id  %}
+        <li class="breadcrumb-item active" aria-current="page">Movimento del {{ stock_movement.created_at }}</li>
+        {% else %}
+            <li class="breadcrumb-item active" aria-current="page">Nuovo Movimento</li>
+        {% endif %}
+        <hr>
+            
+        
+    </ol>
+</nav>
+
+    <div class="container">
+        
+        {% if form.instance.id  %}
+            <h3>Modifica movimento del {{ stock_movement.created_at }}</h3>
+        {% else %}
+            <h3> Aggiungi Movimento stock</h3>
+        {% endif %}
+        <hr>
+        
+        {% include "core/partials/_messages.html" %}
+        
+        
+        <br>
+
+
+        <form method="post">
+            {% csrf_token %}
+            {% if form.errors %}
+        <ul style="color: red;">
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <li>{{ field }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+            <div class="row">
+                <div class="col-3">
+                    {{ form.fk_lotto|as_crispy_field }}
+                </div>
+                <div class="col-3">
+                    {{ form.from_pallet|as_crispy_field }}
+                </div>
+                <div class="col-3">
+                    {{ form.to_pallet|as_crispy_field }}
+                </div>
+                <div class="col-3">
+                    {{ form.pezzi|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                    {{ form.movimento|as_crispy_field }}
+                </div>
+                <div class="col-3">
+                    {{ form.fk_scelta|as_crispy_field }}
+                </div>
+
+                <div class="col-2">
+                    {{ form.note|as_crispy_field }}
+                </div>
+                
+            </div>
+            <div class="row">
+                
+                <div class="col-2">
+                    {{ form.created_by|as_crispy_field }}
+                </div>
+                
+            </div>
+           
+
+            
+            <input type="submit" name="salva" class="btn btn-success mb-2 me-1" value="Salva">            
+            <button type="button" class="btn btn-danger mb-2 me-1" onclick="cancelAndRedirectTo(`{% url 'magazzino:home_stock_movements' %}`)"><i class="bi bi-arrow-counterclockwise"></i> Annulla</button>
+        </form>
+        <hr>
+        
+    </div>
+
+
+
+{% endblock %}
+{% block extra_scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+            setFocusOnField('id_fk_lotto');
+        });
+
+    
+</script>
+{% endblock %}
