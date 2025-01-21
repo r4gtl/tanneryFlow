@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "magazzino",
     "django_filters",
     "django_countries",
+    "widget_tweaks",
     "django_bootstrap5",
     "crispy_forms",
     "crispy_bootstrap5",

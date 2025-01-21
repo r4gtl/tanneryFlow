@@ -57,6 +57,14 @@ class Pallet(models.Model):
     codice = models.CharField(max_length=10, null=False, blank=False)
     origine = models.CharField(max_length=50, null=True, blank=True)
     pezzi = models.IntegerField()
+    fk_scelta = models.ForeignKey(
+        Scelta,
+        related_name="palletts",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
+
     fk_zona_magazzino = models.ForeignKey(
         ZonaMagazzino,
         related_name="palletts",
