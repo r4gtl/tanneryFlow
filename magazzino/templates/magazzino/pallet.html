@@ -57,9 +57,7 @@
                 <div class="col-3">
                     {{ form.origine|as_crispy_field }}
                 </div>
-                <div class="col-3">
-                    {{ form.pezzi|as_crispy_field }}
-                </div>
+                
                 <div class="col-3">
                     {{ form.fk_scelta|as_crispy_field }}
                 </div>
@@ -71,6 +69,8 @@
                 <div class="col-3">
                     {{ form.note|as_crispy_field }}
                 </div>
+                <div class="col-6 d-flex align-items-center justify-content-center"><h3>Quantità attuale: {{ pallet.net_stock }} pezzi</h3></div>
+                
                 
             </div>
             <div class="row">
@@ -81,6 +81,7 @@
                 
             </div>
            
+            
 
             
             <input type="submit" name="salva_esci" class="btn btn-success mb-2 me-1" value="Salva ed Esci">

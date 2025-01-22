@@ -1,7 +1,7 @@
 <!-- Movimenti -->
 <h2>Movimenti per il pallet: {{ pallet.codice }}</h2>
 <div class="d-flex flex-row-reverse bd-highlight">
-    <a href="{% url 'magazzino:aggiungi_stock_movement' %}" class="btn btn-success p-2 bd-highlight"><i class="bi bi-person-plus"></i> Aggiungi Movimento</a>
+    <a href="{% url 'magazzino:ask_movement' %}?pallet={{ object.id }}" class="btn btn-success p-2 bd-highlight"><i class="bi bi-person-plus"></i> Aggiungi Movimento</a>
     </div>  
     <br>
 {% if movements %}
@@ -15,14 +15,15 @@
         <th>Quantità</th>
         <th>Provenienza</th>
         <th>Destinazione</th>
+        <th>+/-</th>
         </tr>
     </thead>
     <tbody>
         
             {% for mov in movements %}
             <tr>
-                <td>{{ mov.date }}</td>
-                <td>{{ mov.movement_type }}</td>
+                <td>{{ mov.created_at }}</td>
+                <td>{{ mov.movimento }}</td>
                 <td>{{ mov.fk_lotto.codice }}</td>
                 <td>{{ mov.fk_scelta.descrizione }}</td>
                 <td>{{ mov.pezzi }}</td>
@@ -39,6 +40,13 @@
                 {% else %}
                     Uscita/Scarto
                 {% endif %}
+                </td>
+                <td>
+                    {% if mov.movimento == "in" %}
+                        +
+                    {% else %}
+                        -
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

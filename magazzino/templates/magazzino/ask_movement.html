@@ -1,0 +1,65 @@
+{% extends 'core/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}{{ block.super }} | Magazzino - Scegli tipo movimento {% endblock %}
+
+
+
+{% block content %}
+
+{% include 'core/modals/delConfirm.html' %}
+
+<nav aria-label="breadcrumb" class="mt-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>      
+        <li class="breadcrumb-item"><a href="{% url 'magazzino:modifica_pallet' pk=pallet_id %}">Pallet</a></li>        
+        <li class="breadcrumb-item active" aria-current="page">Scegli tipo movimento</li>
+        
+        <hr>
+            
+        
+    </ol>
+</nav>
+
+    <div class="container">
+        
+        
+        <h2 class="text-center">Scegli il tipo di movimento</h2>
+        <div class="d-flex flex-wrap gap-3 justify-content-center">
+            <!-- Pulsante Carico -->
+            <a class="btn btn-primary btn-lg" 
+            href="{% url 'magazzino:aggiungi_stock_movement' %}?pallet={{ pallet_id }}&mtype=IN">
+            Carico<br>(Aggiungi pezzi al pallet)
+            </a>
+            
+            <!-- Pulsante Scarico -->
+            <a class="btn btn-danger btn-lg" 
+            href="{% url 'magazzino:aggiungi_stock_movement' %}?pallet={{ pallet_id }}&mtype=OUT">
+            Scarico<br>(Togli pezzi dal pallet)
+            </a>
+            
+            <!-- Pulsante Trasferimento -->
+            <a class="btn btn-warning btn-lg" 
+            href="{% url 'magazzino:aggiungi_stock_movement' %}?pallet={{ pallet_id }}&mtype=TRANSFER">
+            Trasferimento
+            </a>
+
+            <!-- Pulsante Vendita -->
+            <a class="btn btn-success btn-lg" 
+            href="{% url 'magazzino:aggiungi_stock_movement' %}?pallet={{ pallet_id }}&mtype=SALE">
+            Vendita<br>(Vendi tutto o parte del pallet)
+            </a>
+        </div>
+
+        
+    </div>
+
+
+
+{% endblock %}
+{% block extra_scripts %}
+<script>
+
+
+    
+</script>
+{% endblock %}

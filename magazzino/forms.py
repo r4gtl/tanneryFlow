@@ -60,7 +60,7 @@ class PalletModelForm(forms.ModelForm):
         widgets = {
             "codice": forms.TextInput(attrs={"class": "form-control"}),
             "origine": forms.TextInput(attrs={"class": "form-control"}),
-            "pezzi": forms.NumberInput(attrs={"class": "form-control"}),
+            # "pezzi": forms.NumberInput(attrs={"class": "form-control"}),
             "note": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
             "created_at": forms.HiddenInput(),
             "created_by": forms.HiddenInput(),
@@ -68,7 +68,7 @@ class PalletModelForm(forms.ModelForm):
         labels = {
             "codice": "Codice",
             "origine": "Origine",
-            "pezzi": "Pezzi",
+            # "pezzi": "Pezzi",
             "note": "Note",
             "fk_zona_magazzino": "Zona Magazzino",
             "fk_scelta": "Scelta",

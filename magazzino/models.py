@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Sum, Q
+
 import os
 from datetime import date
 from django.urls import reverse
@@ -15,6 +17,10 @@ class Scelta(models.Model):
         User, related_name="scelte", null=True, blank=True, on_delete=models.SET_NULL
     )
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+
+    class Meta:
+        verbose_name = "Scelta"  # Nome al singolare
+        verbose_name_plural = "Scelte"  # Nome al plurale
 
     def __str__(self):
         return self.descrizione
@@ -32,6 +38,10 @@ class ZonaMagazzino(models.Model):
         on_delete=models.SET_NULL,
     )
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+
+    class Meta:
+        verbose_name = "Zona Magazzino"  # Nome al singolare
+        verbose_name_plural = "Zone Magazzino"  # Nome al plurale
 
     def __str__(self):
         return self.descrizione
@@ -56,7 +66,7 @@ class Lotto(models.Model):
 class Pallet(models.Model):
     codice = models.CharField(max_length=10, null=False, blank=False)
     origine = models.CharField(max_length=50, null=True, blank=True)
-    pezzi = models.IntegerField()
+    pezzi = models.IntegerField(null=True, blank=True)
     fk_scelta = models.ForeignKey(
         Scelta,
         related_name="palletts",
@@ -84,6 +94,25 @@ class Pallet(models.Model):
 
     def __str__(self):
         return self.codice
+
+    def net_stock(self):
+        """Restituisce la quantità netta presente su questo pallet,
+        calcolando i movimenti IN - OUT sullo stesso."""
+        from .models import StockMovement  # import locale per evitare import circolari
+
+        total_in = (
+            StockMovement.objects.filter(to_pallet=self).aggregate(total=Sum("pezzi"))[
+                "total"
+            ]
+            or 0
+        )
+        total_out = (
+            StockMovement.objects.filter(from_pallet=self).aggregate(
+                total=Sum("pezzi")
+            )["total"]
+            or 0
+        )
+        return total_in - total_out
 
 
 class StockMovement(models.Model):

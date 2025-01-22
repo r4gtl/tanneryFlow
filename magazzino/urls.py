@@ -35,4 +35,5 @@ urlpatterns = [
         delete_stock_movement,
         name="delete_stock_movement",
     ),
+    path("stock_movement/ask/", AskMovementView.as_view(), name="ask_movement"),
 ]
