@@ -83,10 +83,18 @@
            
 
             
-            <input type="submit" name="salva" class="btn btn-success mb-2 me-1" value="Salva">            
+            <input type="submit" name="salva_esci" class="btn btn-success mb-2 me-1" value="Salva ed Esci">
+            <input type="submit" name="salva_continua" class="btn btn-success mb-2 me-1" value="Salva e continua">
             <button type="button" class="btn btn-danger mb-2 me-1" onclick="cancelAndRedirectTo(`{% url 'magazzino:home_palletts' %}`)"><i class="bi bi-arrow-counterclockwise"></i> Annulla</button>
         </form>
         <hr>
+        
+        {% if form.instance.id  %}
+        {% include "magazzino/partials/_tabella_movimenti_pallet.html" %}
+        {% else %}
+            <p>Nessun movimento presente</p>
+        {% endif %}
+
         
     </div>
 

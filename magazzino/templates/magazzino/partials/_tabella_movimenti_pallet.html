@@ -1,0 +1,51 @@
+<!-- Movimenti -->
+<h2>Movimenti per il pallet: {{ pallet.codice }}</h2>
+<div class="d-flex flex-row-reverse bd-highlight">
+    <a href="{% url 'magazzino:aggiungi_stock_movement' %}" class="btn btn-success p-2 bd-highlight"><i class="bi bi-person-plus"></i> Aggiungi Movimento</a>
+    </div>  
+    <br>
+{% if movements %}
+    <table class="table table-striped">
+    <thead>
+        <tr>
+        <th>Data</th>
+        <th>Tipo Movimento</th>
+        <th>Lotto</th>
+        <th>Scelta</th>
+        <th>Quantità</th>
+        <th>Provenienza</th>
+        <th>Destinazione</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+            {% for mov in movements %}
+            <tr>
+                <td>{{ mov.date }}</td>
+                <td>{{ mov.movement_type }}</td>
+                <td>{{ mov.fk_lotto.codice }}</td>
+                <td>{{ mov.fk_scelta.descrizione }}</td>
+                <td>{{ mov.pezzi }}</td>
+                <td>
+                {% if mov.from_pallet %}
+                    {{ mov.from_pallet.codice }}
+                {% else %}
+                    Esterno
+                {% endif %}
+                </td>
+                <td>
+                {% if mov.to_pallet %}
+                    {{ mov.to_pallet.codice }}
+                {% else %}
+                    Uscita/Scarto
+                {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        
+    </tbody>
+    </table>
+{% else %}
+    <p>Nessun movimento presente</p>
+{% endif %}
+<!--Fine movimenti-->

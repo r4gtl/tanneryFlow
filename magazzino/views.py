@@ -115,6 +115,27 @@ class PalletCreateView(LoginRequiredMixin, CreateView):
             "created_by": created_by,
         }
 
+    def get_success_url(self):
+        if "salva_esci" in self.request.POST:
+            return reverse_lazy("magazzino:home_palletts")
+        pk_pallet = self.object.pk
+        print("pk_pallet: " + str(pk_pallet))
+        return reverse_lazy("magazzino:modifica_pallet", kwargs={"pk": pk_pallet})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pallet = self.object  # il pallet che stai modificando
+
+        # Filtra i movimenti (in entrata o in uscita) che coinvolgono questo pallet
+        movements = StockMovement.objects.filter(
+            models.Q(from_pallet=pallet) | models.Q(to_pallet=pallet)
+        ).select_related(
+            "lot", "scelta"
+        )  # per caricare alcuni FK se servono
+
+        context["movements"] = movements
+        return context
+
 
 class PalletUpdateView(LoginRequiredMixin, UpdateView):
     model = Pallet
@@ -126,6 +147,13 @@ class PalletUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         messages.info(self.request, self.success_message)  # Compare sul success_url
         return super().form_valid(form)
+
+    def get_success_url(self):
+        if "salva_esci" in self.request.POST:
+            return reverse_lazy("magazzino:home_palletts")
+        pk_pallet = self.object.pk
+        print("pk_pallet: " + str(pk_pallet))
+        return reverse_lazy("magazzino:modifica_pallet", kwargs={"pk": pk_pallet})
 
 
 def delete_pallet(request, pk):
