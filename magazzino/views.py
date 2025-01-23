@@ -309,8 +309,9 @@ class StockMovementUpdateView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         pallet_id = self.request.GET.get("pallet")
-        pallet = Pallet.get_object_or_404("")
+        pallet = get_object_or_404(Pallet, pk=pallet_id)
         context["pallet_id"] = pallet_id
+        context["pallet"] = pallet
         return context
 
     def form_valid(self, form):

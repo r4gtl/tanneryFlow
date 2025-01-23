@@ -1,4 +1,4 @@
-from django.db.models import Sum, Case, When, F, IntegerField
+from django.db.models import Sum, Case, When, F, IntegerField, Prefetch
 from django.db.models.functions import Coalesce
 from collections import defaultdict
 from .models import Lotto, Pallet, StockMovement, Scelta
@@ -113,26 +113,34 @@ def get_pallets_grouped_by_scelta_old():
 
 def get_pallets_with_total_in_and_out():
     """
-    Eseguiamo la prima query per ottenere i totali in entrata e in uscita per ciascun pallet.
-    Inoltre, otteniamo anche la descrizione della Scelta.
+    Restituisce i pallet con i totali in entrata e in uscita.
     """
-    return Pallet.objects.annotate(
-        total_in=Sum(
-            "movements_in__pezzi",
-            filter=StockMovement.objects.filter(
-                to_pallet=F("pk"), movimento=StockMovement.IN
-            ),
-            default=0,
-        ),
-        total_out=Sum(
-            "movements_out__pezzi",
-            filter=StockMovement.objects.filter(
-                from_pallet=F("pk"), movimento=StockMovement.OUT
-            ),
-            default=0,
-        ),
-        # Nota che non usiamo values() qui
-    )
+    pallets = Pallet.objects.all()
+    result = []
+
+    # Calcoliamo manualmente il totale in entrata e in uscita per ciascun pallet
+    for pallet in pallets:
+        total_in = (
+            StockMovement.objects.filter(
+                to_pallet=pallet, movimento=StockMovement.IN
+            ).aggregate(Sum("pezzi"))["pezzi__sum"]
+            or 0
+        )
+        total_out = (
+            StockMovement.objects.filter(
+                from_pallet=pallet, movimento=StockMovement.OUT
+            ).aggregate(Sum("pezzi"))["pezzi__sum"]
+            or 0
+        )
+        result.append(
+            {
+                "pallet": pallet,
+                "total_in": total_in,
+                "total_out": total_out,
+            }
+        )
+
+    return result
 
 
 def get_pallets_grouped_by_scelta():
@@ -142,24 +150,30 @@ def get_pallets_grouped_by_scelta():
     # Prima query: otteniamo i totali in entrata e in uscita per ogni pallet
     pallets_with_stock = get_pallets_with_total_in_and_out()
 
-    # Elaborazione dei dati in Python per calcolare la somma netta per ciascun pallet
+    # Raggruppiamo per fk_scelta
     grouped_data = defaultdict(int)
 
-    for pallet in pallets_with_stock:
-        net_stock = pallet.total_in - pallet.total_out
-        # Sommiamo la rimanenza netta per ogni fk_scelta
-        grouped_data[pallet.fk_scelta] += net_stock
+    for pallet_data in pallets_with_stock:
+        # Verifica se fk_scelta è None
+        if pallet_data["pallet"].fk_scelta is not None:
+            net_stock = pallet_data["total_in"] - pallet_data["total_out"]
+            grouped_data[
+                pallet_data["pallet"].fk_scelta.id
+            ] += net_stock  # Raggruppiamo usando l'ID della Scelta
+        else:
+            # Se fk_scelta è None, possiamo decidere cosa fare (es. ignorare o fare altro)
+            print(f"Pallet {pallet_data['pallet'].codice} senza fk_scelta")
 
     # Otteniamo la descrizione della Scelta per ogni fk_scelta
     scelte = {scelta.id: scelta.descrizione for scelta in Scelta.objects.all()}
 
-    # Convertiamo i dati raggruppati in una lista di dizionari, aggiungendo la descrizione
+    # Convertiamo i dati raggruppati in una lista di dizionari
     result = [
         {
             "fk_scelta": fk_scelta,
             "descrizione": scelte.get(
                 fk_scelta, "Descrizione non trovata"
-            ),  # Aggiungi la descrizione
+            ),  # Otteniamo la descrizione
             "total_net_stock": total_net_stock,
         }
         for fk_scelta, total_net_stock in grouped_data.items()
