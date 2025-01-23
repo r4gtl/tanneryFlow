@@ -56,7 +56,7 @@ def lotti_disponibili():
     return lotti_annotati
 
 
-def get_pallets_with_total_in_and_out():
+def get_pallets_with_total_in_and_out_old():
     """
     Eseguiamo la prima query per ottenere i totali in entrata e in uscita per ciascun pallet.
     """
@@ -80,7 +80,7 @@ def get_pallets_with_total_in_and_out():
     )  # Otteniamo solo i campi necessari
 
 
-def get_pallets_grouped_by_scelta():
+def get_pallets_grouped_by_scelta_old():
     """
     Restituisce i pallet raggruppati per fk_scelta e la somma della rimanenza netta.
     """
@@ -103,6 +103,63 @@ def get_pallets_grouped_by_scelta():
         {
             "fk_scelta": fk_scelta,
             "descrizione": scelte.get(fk_scelta, "Descrizione non trovata"),
+            "total_net_stock": total_net_stock,
+        }
+        for fk_scelta, total_net_stock in grouped_data.items()
+    ]
+
+    return result
+
+
+def get_pallets_with_total_in_and_out():
+    """
+    Eseguiamo la prima query per ottenere i totali in entrata e in uscita per ciascun pallet.
+    Inoltre, otteniamo anche la descrizione della Scelta.
+    """
+    return Pallet.objects.annotate(
+        total_in=Sum(
+            "movements_in__pezzi",
+            filter=StockMovement.objects.filter(
+                to_pallet=F("pk"), movimento=StockMovement.IN
+            ),
+            default=0,
+        ),
+        total_out=Sum(
+            "movements_out__pezzi",
+            filter=StockMovement.objects.filter(
+                from_pallet=F("pk"), movimento=StockMovement.OUT
+            ),
+            default=0,
+        ),
+        # Nota che non usiamo values() qui
+    )
+
+
+def get_pallets_grouped_by_scelta():
+    """
+    Restituisce i pallet raggruppati per fk_scelta e la somma della rimanenza netta.
+    """
+    # Prima query: otteniamo i totali in entrata e in uscita per ogni pallet
+    pallets_with_stock = get_pallets_with_total_in_and_out()
+
+    # Elaborazione dei dati in Python per calcolare la somma netta per ciascun pallet
+    grouped_data = defaultdict(int)
+
+    for pallet in pallets_with_stock:
+        net_stock = pallet.total_in - pallet.total_out
+        # Sommiamo la rimanenza netta per ogni fk_scelta
+        grouped_data[pallet.fk_scelta] += net_stock
+
+    # Otteniamo la descrizione della Scelta per ogni fk_scelta
+    scelte = {scelta.id: scelta.descrizione for scelta in Scelta.objects.all()}
+
+    # Convertiamo i dati raggruppati in una lista di dizionari, aggiungendo la descrizione
+    result = [
+        {
+            "fk_scelta": fk_scelta,
+            "descrizione": scelte.get(
+                fk_scelta, "Descrizione non trovata"
+            ),  # Aggiungi la descrizione
             "total_net_stock": total_net_stock,
         }
         for fk_scelta, total_net_stock in grouped_data.items()
