@@ -13,6 +13,8 @@
           <hr />
           <p class="card-text">
             Elenco Lotti
+            <br>
+            Numero lotti disponibili = {{ num_lotti_disponibili }}
           </p>
           <a
             href="{% url 'magazzino:home_lotti' %}"
@@ -31,6 +33,7 @@
           <hr />
           <p class="card-text">
             Elenco Palletts
+            
           </p>
           <a
             href="{% url 'magazzino:home_palletts' %}"
@@ -69,6 +72,44 @@
     </div>
   </div>
 
+
+  <div class="row mt-4">
+    <div class="col-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="bi bi-house-add"></i> Scelte disponibili
+          </h5>
+          <hr />
+          <p class="card-text">
+            <h4>Stock dei pallet raggruppati per Scelta</h4>
+              <table>
+                  <thead>
+                      <tr>
+                          <th>Scelta</th>
+                          <th>Totale Pezzi Netti</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {% for pallet in pallets_scelta %}
+                          <tr>
+                              <td>{{ pallet.descrizione }}</td>
+                              <td class="text-end">{{ pallet.total_net_stock }}</td>
+                          </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+          </p>
+          
+          
+        </div>
+      </div>
+    </div>
+
+    
+
+    
+  </div>
   
 </div>
 {% endblock %} {% block extra_scripts %}

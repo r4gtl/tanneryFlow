@@ -233,12 +233,19 @@ class StockMovementCreateView(LoginRequiredMixin, CreateView):
     form_class = StockMovementModelForm
     template_name = "magazzino/stock_movement.html"
     success_message = "Movimento aggiunto correttamente!"
-    success_url = reverse_lazy("magazzino:home_stock_movements")
+    # success_url = reverse_lazy("magazzino:home_stock_movements")
     # Oppure reindirizza alla pagina del pallet se preferisci
 
     def form_valid(self, form):
         messages.info(self.request, self.success_message)
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Recupera "pallet" dalla query string
+        pallet_id = self.request.GET.get("pallet")
+        context["pallet_id"] = pallet_id
+        return context
 
     def get_initial(self):
         initial = super().get_initial()
@@ -272,32 +279,39 @@ class StockMovementCreateView(LoginRequiredMixin, CreateView):
 
         return initial
 
-
-class StockMovementCreateView_old(LoginRequiredMixin, CreateView):
-    model = StockMovement
-    form_class = StockMovementModelForm
-    template_name = "magazzino/stock_movement.html"
-    success_message = "Movimento aggiunto correttamente!"
-    success_url = reverse_lazy("magazzino:home_stock_movements")
-
-    def form_valid(self, form):
-        messages.info(self.request, self.success_message)  # Compare sul success_url
-        return super().form_valid(form)
-
-    def get_initial(self):
-        created_by = self.request.user
-
-        return {
-            "created_by": created_by,
-        }
+    def get_success_url(self):
+        # Prova a recuperare l'ID del pallet dalla GET
+        pallet_id = self.request.GET.get("pallet")
+        if pallet_id:
+            # Se esiste, reindirizza alla modifica del pallet
+            return reverse_lazy("magazzino:modifica_pallet", kwargs={"pk": pallet_id})
+        else:
+            # Altrimenti usa un fallback (es. home_palletts o home_stock_movements)
+            return reverse_lazy("magazzino:home_stock_movements")
 
 
 class StockMovementUpdateView(LoginRequiredMixin, UpdateView):
     model = StockMovement
     form_class = StockMovementModelForm
     template_name = "magazzino/stock_movement.html"
-    success_message = "Lotto modificato correttamente!"
-    success_url = reverse_lazy("magazzino:home_stock_movements")
+    success_message = "Movimento modificato correttamente!"
+
+    def get_success_url(self):
+        # Recuperiamo il pallet dalla query string (se presente)
+        pallet_id = self.request.GET.get("pallet")
+        if pallet_id:
+            # Torniamo alla view di modifica pallet con pk=pallet_id
+            return reverse_lazy("magazzino:modifica_pallet", kwargs={"pk": pallet_id})
+        else:
+            # Se non c'è pallet, fallback su un'altra pagina
+            return reverse_lazy("magazzino:home_stock_movements")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        pallet_id = self.request.GET.get("pallet")
+        pallet = Pallet.get_object_or_404("")
+        context["pallet_id"] = pallet_id
+        return context
 
     def form_valid(self, form):
         messages.info(self.request, self.success_message)  # Compare sul success_url

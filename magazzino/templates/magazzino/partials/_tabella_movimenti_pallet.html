@@ -22,7 +22,7 @@
         
             {% for mov in movements %}
             <tr>
-                <td>{{ mov.created_at }}</td>
+                <td><a href="{% url 'magazzino:modifica_stock_movement' pk=mov.pk %}?pallet={{ object.id }}">{{ mov.created_at }}</a></td>
                 <td>{{ mov.movimento }}</td>
                 <td>{{ mov.fk_lotto.codice }}</td>
                 <td>{{ mov.fk_scelta.descrizione }}</td>
