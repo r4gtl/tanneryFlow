@@ -76,40 +76,23 @@
   <div class="row mt-4">
     <div class="col-4">
       <div class="card">
-        <div class="card-body">
+        <!-- Card Header con sfondo bg-warning -->
+        <div class="card-header bg-warning">
           <h5 class="card-title">
             <i class="bi bi-house-add"></i> Scelte disponibili
           </h5>
-          <hr />
-          <p class="card-text">
-            <h4>Stock dei pallet raggruppati per Scelta</h4>
-              <table>
-                  <thead>
-                      <tr>
-                          <th>Scelta</th>
-                          <th>Totale Pezzi Netti</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                      {% for pallet in pallets_scelta %}
-                          <tr>
-                              <td>{{ pallet.descrizione }}</td>
-                              <td class="text-end">{{ pallet.total_net_stock }}</td>
-                          </tr>
-                      {% endfor %}
-                  </tbody>
-              </table>
-          </p>
-          
-          
+        </div>
+  
+        <!-- Card Body con padding ridotto per favorire la larghezza della tabella -->
+        <div class="card-body">
+          <!-- Se la tua tabella ha già un <table> dentro, assicurati che abbia width: 100% 
+               o la classe .w-100 oppure .table-responsive per renderla responsiva -->
+          {% include "./partials/_stock_per_scelte.html" %}
         </div>
       </div>
     </div>
-
-    
-
-    
   </div>
+  
   
 </div>
 {% endblock %} {% block extra_scripts %}

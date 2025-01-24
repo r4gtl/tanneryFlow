@@ -1,0 +1,19 @@
+<h6>Stock dei pallet raggruppati per Scelta</h6>
+<div class="table-responsive">
+  <table class="table table-striped w-100 table-bordered">
+    <thead>
+      <tr>
+        <th>Scelta</th>
+        <th class="text-end">Totale Pezzi disponibili</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for pallet in pallets_scelta %}
+        <tr>
+          <td >{{ pallet.descrizione }}</td>
+          <td class="text-end">{{ pallet.total_net_stock }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

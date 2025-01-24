@@ -63,9 +63,28 @@ class LottoUpdateView(LoginRequiredMixin, UpdateView):
     success_message = "Lotto modificato correttamente!"
     success_url = reverse_lazy("magazzino:home_lotti")
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Aggiungi i movimenti del lotto alla context
+        lotto = self.get_object()  # Ottieni l'oggetto Lotto
+        movements = self.get_lotto_movements(lotto)
+
+        context["lotto"] = lotto
+        context["movements"] = movements
+        return context
+
     def form_valid(self, form):
         messages.info(self.request, self.success_message)  # Compare sul success_url
         return super().form_valid(form)
+
+    def get_lotto_movements(self, lotto):
+        """Restituisce i movimenti 'in' del lotto raggruppati per scelta e pallet."""
+        return (
+            StockMovement.objects.filter(fk_lotto=lotto, movimento=StockMovement.IN)
+            .values("fk_scelta__descrizione", "to_pallet__codice")
+            .annotate(total_pezzi=Sum("pezzi"))
+        )
 
 
 def delete_lotto(request, pk):

@@ -24,7 +24,7 @@
         <br>
         {% include "core/partials/_messages.html" %}
         
-
+        {% include 'core/modals/delConfirm.html' %}
         
 
         <!-- Inizio filtro -->
@@ -94,6 +94,7 @@
                 <th>Origine</th>
                 <th>Quantità</th>
                 <th>Data Arrivo</th>
+                <th scope="col" class="w-10">Azioni</th>
                 
                 
                             
@@ -103,10 +104,11 @@
               <tbody>
                 {% for lotto in lotti_paginator %}
                   <tr>
-                    <td class="col-md-1"><a href="{% url 'magazzino:modifica_lotto' pk=lotto.pk %}">{{ lotto.codice }}</a></td>
-                    <td class="col-md-2">{{ lotto.origine }}</td>  
-                    <td class="col-md-2">{{ lotto.pezzi }} <img class="country-select-flag" id="{ flag_id }" style="max-height: 24px;" src="{{ fornitore.country.flag  }}"></td>
-                    <td class="col-md-2">{{ lotto.created_at }}</td> 
+                    <td ><a href="{% url 'magazzino:modifica_lotto' pk=lotto.pk %}">{{ lotto.codice }}</a></td>
+                    <td >{{ lotto.origine }}</td>  
+                    <td >{{ lotto.pezzi }} <img class="country-select-flag" id="{ flag_id }" style="max-height: 24px;" src="{{ fornitore.country.flag  }}"></td>
+                    <td >{{ lotto.created_at }}</td> 
+                    <td class="text-center"><a href="{% url 'magazzino:delete_lotto' pk=lotto.pk %}" class="btn btn-sm btn-outline-danger confirm-delete" title="Delete" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" id="deleteButton{{lotto.pk}}"><i class="bi bi-trash"></i>Elimina</a></td>
                   </tr>
                 
                 {% endfor %}

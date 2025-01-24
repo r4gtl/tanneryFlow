@@ -5,7 +5,8 @@
     </div>  
     <br>
 {% if movements %}
-    <table class="table table-striped">
+<div class="table-responsive">
+    <table class="table table-hover table-striped table-bordered">
     <thead>
         <tr>
         <th>Data</th>
@@ -16,6 +17,7 @@
         <th>Provenienza</th>
         <th>Destinazione</th>
         <th>+/-</th>
+        <th scope="col" class="w-10">Azioni</th>
         </tr>
     </thead>
     <tbody>
@@ -48,12 +50,15 @@
                         -
                     {% endif %}
                 </td>
+                <td class="text-center"><a href="{% url 'magazzino:delete_stock_movement' pk=mov.pk %}" class="btn btn-sm btn-outline-danger confirm-delete" title="Delete" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" id="deleteButton{{mov.pk}}"><i class="bi bi-trash"></i>Elimina</a></td>
             </tr>
             {% endfor %}
         
     </tbody>
     </table>
+</div>
 {% else %}
     <p>Nessun movimento presente</p>
+
 {% endif %}
 <!--Fine movimenti-->

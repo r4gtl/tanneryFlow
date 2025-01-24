@@ -1,0 +1,26 @@
+<h4>Scelte ottenute</h4>
+<div class="table-responsive">
+
+<table class="table table-striped w-50 table-bordered">
+    <thead>
+        <tr>
+            <th>Scelta</th>
+            <th>Pallet</th>
+            <th class="text-end">Pezzi</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for movement in movements %}
+            <tr>
+                <td>{{ movement.fk_scelta__descrizione|default_if_none:"Non Assegnata" }}</td>
+                <td>{{ movement.to_pallet__codice }}</td>
+                <td class="text-end">{{ movement.total_pezzi }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="3">Nessun movimento di carico per questo lotto.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>

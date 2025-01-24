@@ -106,6 +106,7 @@
                 <th>Scelta</th>
                 <th>Zona Magazzino</th>
                 <th>Data Creazione</th>
+                <th th scope="col" class="w-10">Azioni</th>
                 
                 
                 
@@ -116,12 +117,13 @@
               <tbody>
                 {% for pallet in palletts_paginator %}
                     
-                    <td class="col-md-1"><a href="{% url 'magazzino:modifica_pallet' pk=pallet.pk %}">{{ pallet.codice }}</a></td>
-                    <td class="col-md-2">{{ pallet.origine }}</td>  
-                    <td class="col-md-2 text-end">{{ pallet.net_stock }}</td>                    
-                    <td class="col-md-2">{{ pallet.fk_scelta|default_if_none:"Non assegnata" }}</td>  
-                    <td class="col-md-2">{{ pallet.fk_zona_magazzino|default_if_none:"Non assegnata" }}</td>  
-                    <td class="col-md-2">{{ pallet.created_at }}</td> 
+                    <td><a href="{% url 'magazzino:modifica_pallet' pk=pallet.pk %}">{{ pallet.codice }}</a></td>
+                    <td>{{ pallet.origine }}</td>  
+                    <td class="text-end">{{ pallet.net_stock }}</td>                    
+                    <td>{{ pallet.fk_scelta|default_if_none:"Non assegnata" }}</td>  
+                    <td>{{ pallet.fk_zona_magazzino|default_if_none:"Non assegnata" }}</td>  
+                    <td>{{ pallet.created_at }}</td> 
+                    <td class="text-center"><a href="{% url 'magazzino:delete_pallet' pk=pallet.pk %}" class="btn btn-sm btn-outline-danger confirm-delete" title="Delete" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" id="deleteButton{{pallet.pk}}"><i class="bi bi-trash"></i>Elimina</a></td>
                   </tr>
                 
                 {% endfor %}
